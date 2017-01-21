@@ -84,7 +84,7 @@ vector<int> * generateVector() {
 
 	vector<int> *randVector = new vector<int>(size);
 	for (auto iter = randVector -> begin(); iter != randVector -> end(); iter++) {
-		*iter = rand() % 20;
+		*iter = rand();
 	}
 
 	auto finish_time = std::chrono::high_resolution_clock::now();
