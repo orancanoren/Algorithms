@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h> // for srand(), rand()
-#include <ctime>
+#include <chrono> // for benchmarking purposes
 
 using namespace std;
 
@@ -31,7 +31,7 @@ void merge(vector<T> & arr, vector<T> & temp, int leftPos, int rightPos, int rig
 	auto iterRight = iterLeftEnd; iterRight++; 
 	// set sentinel position of the right iterator to rightEnd
 	auto iterRightEnd = iterRight; for (int i = 0; i < rightEnd - rightPos; i++) { iterRightEnd++; }
-	auto iterTemp = temp.begin();
+	auto iterTemp = temp.begin(); for (int i = 0; i < leftPos; i++) { iterTemp++; }
 
 	// MARK: Merge operation begins
 
@@ -52,6 +52,11 @@ void merge(vector<T> & arr, vector<T> & temp, int leftPos, int rightPos, int rig
 		*(iterTemp++) = *(iterRight++);
 	}
 	
+	// Copy temp back to arr
+	int processedItemCount = rightEnd - leftPos + 1;
+	for (int i = 0; i < processedItemCount; i++, rightEnd--) {
+		arr[rightEnd] = temp[rightEnd];
+	}
 }
 
 template <typename T>
@@ -75,12 +80,16 @@ vector<int> * generateVector() {
 	cout << "Please enter the size of the vector: " << endl
 		 << ">> ";
 	cin >> size;
+	auto start_time = std::chrono::high_resolution_clock::now();
 
 	vector<int> *randVector = new vector<int>(size);
 	for (auto iter = randVector -> begin(); iter != randVector -> end(); iter++) {
-		*iter = rand();
+		*iter = rand() % 20;
 	}
-	cout << "Vector of size " << randVector -> size() << " has been generated" << endl;
+
+	auto finish_time = std::chrono::high_resolution_clock::now();
+	cout << "Vector of size " << randVector -> size() << " has been generated" << endl
+		<< "Elapsed time for generating vector: " << chrono::duration_cast<chrono::milliseconds>(finish_time - start_time).count() << " ms" << endl;
 	return randVector;
 }
 
@@ -91,7 +100,10 @@ int main() {
 		 << "Merge Sort" << endl
 		 << "--------------" << endl;
 	vector<int> randomVector = *generateVector();
+	auto start_time = chrono::high_resolution_clock::now();
 	sort(randomVector);
-	cout << "Vector is " << (isSorted(randomVector) ? "sorted" : "not sorted") << endl;
+	auto finish_time = chrono::high_resolution_clock::now();
+	cout << endl << "Vector is " << (isSorted(randomVector) ? "sorted" : "not sorted") << endl
+		 << "Elapsed time for sorting: " << chrono::duration_cast<chrono::milliseconds>(finish_time - start_time).count() << " ms" << endl;
 	return 0;
 }
