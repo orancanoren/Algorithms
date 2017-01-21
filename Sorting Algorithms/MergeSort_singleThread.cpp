@@ -18,6 +18,24 @@ bool isSorted(const vector<T> & arr) {
 }
 
 template <typename T>
+vector<T> * generateVector() {
+	int size;
+	cout << "Please enter the size of the vector: " << endl
+		 << ">> ";
+	cin >> size;
+	auto start_time = std::chrono::high_resolution_clock::now();
+	vector<int> *randVector = new vector<int>(size);
+	for (auto iter = randVector -> begin(); iter != randVector -> end(); iter++) {
+		*iter = rand();
+	}
+
+	auto finish_time = std::chrono::high_resolution_clock::now();
+	cout << "Vector of size " << randVector -> size() << " has been generated" << endl
+		<< "Elapsed time for generating vector: " << chrono::duration_cast<chrono::milliseconds>(finish_time - start_time).count() << " ms" << endl;
+	return randVector;
+}
+
+template <typename T>
 void merge(vector<T> & arr, vector<T> & temp, int leftPos, int rightPos, int rightEnd) {
 	// Post condition: merges appropriate positions of arr into temp in order to obtian a sorted vector
 	// used iterators for efficiency
@@ -75,31 +93,13 @@ void sort(vector<T> & arr) {
 	mergeSort(arr, temp, 0, arr.size() - 1);
 }
 
-vector<int> * generateVector() {
-	int size;
-	cout << "Please enter the size of the vector: " << endl
-		 << ">> ";
-	cin >> size;
-	auto start_time = std::chrono::high_resolution_clock::now();
-
-	vector<int> *randVector = new vector<int>(size);
-	for (auto iter = randVector -> begin(); iter != randVector -> end(); iter++) {
-		*iter = rand();
-	}
-
-	auto finish_time = std::chrono::high_resolution_clock::now();
-	cout << "Vector of size " << randVector -> size() << " has been generated" << endl
-		<< "Elapsed time for generating vector: " << chrono::duration_cast<chrono::milliseconds>(finish_time - start_time).count() << " ms" << endl;
-	return randVector;
-}
-
 
 int main() {
 	srand(17);
 	cout << "--------------" << endl
 		 << "Merge Sort" << endl
 		 << "--------------" << endl;
-	vector<int> randomVector = *generateVector();
+	vector<int> randomVector = *generateVector<int>();
 	auto start_time = chrono::high_resolution_clock::now();
 	sort(randomVector);
 	auto finish_time = chrono::high_resolution_clock::now();
