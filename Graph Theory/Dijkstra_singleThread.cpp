@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <chrono> // for benchmarking purposes
 
 #define NOT_A_VERTEX -1
 #define INFINITY INT_MAX
@@ -13,7 +14,6 @@ public:
 
 	void setWeight(int from, int to, uint weight);
 	void calculateDistance();
-	uint getWeight(const int to) const;
 	void printPath(const int to) const;
 	int getDistance(const int to);
 private:
@@ -71,16 +71,47 @@ int Dijsktra::getDistance(const int to) {
 	return distance[to-1];
 }
 
+void Dijsktra::printPath(const int to) const {
+	if (predecessor[to] == source) {
+		cout << source + 1 << " -> ";
+	}
+	else if (predecessor[to] != NOT_A_VERTEX) {
+		printPath(predecessor[to]);
+		cout << predecessor[to] + 1 << " -> ";
+	}
+	else {
+		cout << "There is no path to ";
+	}
+}
+
 int main() {
-	int N, E;
-	cin >> N >> E;
-	Dijsktra d(N, 1);
+	int N, E, source;
+	cout << "Enter the number of vertices: ";
+	cin >> N;
+	cout << "Enter the number of edges: ";
+	cin >> E;
+	cout << "Enter the identifier of the source node: ";
+	cin >> source;
+	Dijsktra d(N, source);
 	for (int i = 0; i < E; i++) {
 		int from, to, cost;
+		cout << "Enter the edge (from, to, cost): ";
 		cin >> from >> to >> cost;
 		d.setWeight(from, to, cost);
 	}
+	auto start_time = chrono::high_resolution_clock::now();
 	d.calculateDistance();
-	cout << d.getDistance(N) << endl;
+	auto end_time = chrono::high_resolution_clock::now();
+	cout << "Distance calculation has been completed" << endl
+		 << "Elapsed time: " << chrono::duration_cast<chrono::milliseconds>(end_time - start_time).count() << " ms" << endl;
+	cout << "Enter the destination node(1 - " << N << ")" <<": ";
+	int input;
+	while (cin >> input) {
+		cout << "Distance: " << d.getDistance(input) << endl
+			 << "Path: ";
+		d.printPath(input-1);
+		cout << input << endl << "Enter the destination node(1 - " << N << ")" << ": ";
+	}
+
 	return 0;
 }
