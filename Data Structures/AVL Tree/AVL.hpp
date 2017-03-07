@@ -7,7 +7,7 @@ struct node {
 	int key;
 	int height;
 
-	node(int item) : key(item), height(0) { }
+	node(int item) : key(item), height(0), left(nullptr), right(nullptr) { }
 };
 
 // AVL tree
