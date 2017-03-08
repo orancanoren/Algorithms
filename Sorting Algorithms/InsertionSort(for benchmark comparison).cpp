@@ -36,22 +36,14 @@ vector<int> * generateVector() {
 
 void insertionSort(vector<int> & vec) {
 	// Post condition: Sorts the vector in increasing order
-	// Use iterators to decrease the constant time further
 	int vecSize = vec.size();
-	auto iter_i = vec.begin(); iter_i++;
-	for (; iter_i != vec.end(); iter_i++) {
-		auto iter_j = iter_i;
-		auto current_i = iter_i;
-		iter_j--;
-		while (*iter_j > *current_i) {
-			swap(*current_i, *iter_j);
-			if (iter_j != vec.begin()) {
-				iter_j--;
-				current_i--;
-			}
+	for (int i = 1; i < vecSize; i++) {
+		int j = i;
+		while (j > 0 && vec[j-1] > vec[j]) {
+			swap(vec[j], vec[j-1]);
+			j--;
 		}
 	}
-
 }
 
 int main() {
