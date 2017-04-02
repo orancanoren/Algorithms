@@ -5,6 +5,7 @@
 <p>Completed as of 2 April:</p>
 <ul>
 <li>Adjacency List Representation</li>
+<li>Graph Exceptions Class</li>
 <li>Bellman-Ford Algorithm</li>
 </ul>
 <p>To be completed:</p>
