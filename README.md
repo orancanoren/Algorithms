@@ -20,4 +20,12 @@
 </ul>
 <hr>
 <h3>Up Next</h3>
-<p>Dijkstra's Shortest Path</p>
+<ul>
+<li><p><b>Algorithm</b> - Dijkstra's Shortest Path</p>
+<li><p><b>To Do</b></p>
+<ol>
+<li>Min Heap</li>
+<li>Binary Search Tree - for <i>decreaseKey()</i></li>
+</ol>
+</li>
+</ul>
