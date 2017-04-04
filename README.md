@@ -2,7 +2,7 @@
 <h4>Efficient C++ implementations of all sorts of algorithms</h4>
 <hr>
 <p><strong>Currently working on</strong> <i>graph theory</i></p>
-<p>Completed as of 2 April:</p>
+<p>Completed as of April 2:</p>
 <ul>
 <li>Adjacency List Representation</li>
 <li>Graph Exceptions Class</li>
