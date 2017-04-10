@@ -10,13 +10,14 @@
 </ul>
 <p>To be completed:</p>
 <ul>
+<li>Dijsktra's Shortest Path</li>
 <li>Breadth First Search</li>
 <li>Depth First Search</li>
+<li>Floyd-Warshall Algorithm</li>
+<li>Topological Sort</li>
 <li>Uniform Cost Search</li>
-<li>Dijsktra's Shortest Path</li>
 <li>Kruskal MST</li>
 <li>Prim MST</li>
-<li>Topological Sort</li>
 </ul>
 <hr>
 <h3>Up Next</h3>
