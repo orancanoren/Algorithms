@@ -6,9 +6,9 @@
 <ul>
 <li>Note that the code utilizes C++11 features, please ensure
 that your compiler supports such functionality</li>
-<li>Graph Theory uses a templated class structure, in your project,
+<li>Graph Theory uses a templated class structure. In your project,
 place the graph.cpp in the same directory as graph.hpp and do NOT
-include the file in your project
+include the CPP file in your project
 </ul>
 <hr />
 <p><strong>Currently working on</strong> <i>graph theory</i></p>
