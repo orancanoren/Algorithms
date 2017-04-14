@@ -1,6 +1,16 @@
 # Algorithms
 <h4>Efficient C++ implementations of all sorts of algorithms</h4>
-<hr>
+<hr />
+<h2>Compilation</h2>
+<p>Compilation Notes</p>
+<ul>
+<li>Note that the code utilizes C++11 features, please ensure
+that your compiler supports such functionality</li>
+<li>Graph Theory uses a templated class structure, in your project,
+place the graph.cpp in the same directory as graph.hpp and do NOT
+include the file in your project
+</ul>
+<hr />
 <p><strong>Currently working on</strong> <i>graph theory</i></p>
 <p>Completed as of April 2:</p>
 <ul>

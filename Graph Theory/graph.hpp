@@ -1,17 +1,6 @@
 #ifndef _GRAPH_H
 #define _GRAPH_H
 
-/* TO DO
-BREADTH FIRST SEARCH
-DEPTH FIRST SEARCH
-UNIFROM COST SEARCH
-
-DIJKSTRA
-KRUSKAL MST
-PRIM MST
-TOPOLOGICAL SORT
-*/
-
 // ADJACENCY LIST REPRESENTATION
 
 #define INFINITY INT_MAX
@@ -28,7 +17,7 @@ public:
 	Vertex<K, V> * next; // keep a linked list of vertices
 	Edge<K, V> * outgoing, *tail; // keep the outgoing Edges from the current Vertex in a linked list
 	V distance; // keep the distance to the source Vertex
-	Vertex(const K & k) 
+	Vertex(const K & k)
 		: key(k), next(nullptr), distance(INFINITY), outgoing(nullptr), from(nullptr), tail(nullptr) { }
 };
 

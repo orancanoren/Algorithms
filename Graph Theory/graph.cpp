@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 
+// Class Graph | Public Utility Function Definitions
+
 template <typename K, typename V>
 Graph<K, V>::Graph() {
 	vertices = nullptr;
@@ -109,13 +111,15 @@ void Graph<K, V>::printPath(const K & to) const {
 	cout << path << endl;
 }
 
+// Mark: Class Graph | Single Source Shortest Path Function Definitions
+
 template <typename K, typename V>
 void Graph<K, V>::bellman_ford(const K & source_key) {
 	if (!graph_altered) return; // no need to recalculate the distances if the graph hasn't been altered
 	// 1) Set initial distances
 	setInitialDistance(source_key);
 
-	// 2) Perform relaxation over all edges V-1 times 
+	// 2) Perform relaxation over all edges V-1 times
 	Vertex<K, V> * iter = vertices;
 	for (int i = 0; i < Vertex_count - 1; i++) {
 		while (iter != nullptr) {
@@ -147,7 +151,7 @@ void Graph<K, V>::bellman_ford(const K & source_key) {
 	graph_altered = false;
 }
 
-// Class Graph Private Member Function Definitions
+// Class Graph | Private Member Function Definitions
 
 template <typename K, typename V>
 Vertex<K, V> *& Graph<K, V>::findVertex(const K & key) const {
