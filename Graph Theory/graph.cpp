@@ -1,12 +1,9 @@
 #include <iostream>
 #include <string>
 
-// Class Graph | Public Utility Function Definitions
-
 template <typename K, typename V>
-Graph<K, V>::Graph() {
-	vertices = nullptr;
-	tail = nullptr;
+Graph<K, V>::Graph(bool undirected)
+	: undirected(undirected), vertices(nullptr), tail(nullptr) {
 	graph_altered = true;
 	Vertex_count = 0;
 }
@@ -16,6 +13,8 @@ Graph<K, V>::~Graph() {
 	makeEmpty();
 	Vertex_count = 0;
 }
+
+// Class Graph | Public Utility Function Definitions
 
 template <typename K, typename V>
 void Graph<K, V>::insert_Vertex(const K & key) {
@@ -33,37 +32,27 @@ void Graph<K, V>::insert_Vertex(const K & key) {
 
 template <typename K, typename V>
 void Graph<K, V>::insert_Edge(const K & from, const K & to, const V & weight) {
-	// 1) Find Vertex `from`
-	Vertex<K, V> * v = findVertex(from);
-	// 2) Find Vertex `to`
-	Vertex<K, V> * v_to = findVertex(to);
-	// 3) Insert the new Edge
-	if (v->tail == nullptr) {
-		v->outgoing = new Edge<K, V>(weight, v_to);
-		v->tail = v->outgoing;
+	newEdge(from, to, weight);
+	if (undirected) {
+		newEdge(to, from, weight);
 	}
-	else {
-		v->tail->next = new Edge<K, V>(weight, v_to);
-		v->tail = v->tail->next;
-	}
-	graph_altered = true;
 }
 
 template <typename K, typename V>
 void Graph<K, V>::remove_Edge(const K & from, const K & to) {
 	// 1) Find Vertex `from`
-	Vertex<K, V> * v = findVertex(from);
+	Vertex<K, V> * v = *findVertex(from);
 	// 2) Find the Edge
 	Edge<K, V> * iter = v->outgoing;
-	if (iter->to == to) {
+	if (iter->to->key == to) {
 		delete iter;
 		v->outgoing = nullptr;
 		graph_altered = true;
 	}
 	else if (iter->next != nullptr) {
-		while (iter->next != nullptr && iter->next->to != to) { iter = iter->next; }
+		while (iter->next != nullptr && iter->next->to->key != to) { iter = iter->next; }
 		if (iter->next == nullptr) throw EdgeNotFoundException();
-		Edge * temp = iter->next;
+		Edge<K, V> * temp = iter->next;
 		iter->next = iter->next->next;
 		delete temp;
 		graph_altered = true;
@@ -73,9 +62,9 @@ void Graph<K, V>::remove_Edge(const K & from, const K & to) {
 
 template <typename K, typename V>
 void Graph<K, V>::remove_Vertex(const K & key) {
-	Vertex * iter = vertices;
+	Vertex<K, V> * iter = vertices;
 	if (iter->key == key) {
-		Vertex * temp = vertices;
+		Vertex<K, V> * temp = vertices;
 		vertices = vertices->next;
 		delete temp;
 		Vertex_count--;
@@ -83,8 +72,8 @@ void Graph<K, V>::remove_Vertex(const K & key) {
 	}
 	else if (iter->next != nullptr) {
 		while (iter->next != nullptr && iter->next->key != key) { iter = iter->next; }
-		if (iter->next == nullptr) throw VertexNotFound();
-		Vertex * temp = iter->next;
+		if (iter->next == nullptr) throw VertexNotFoundException();
+		Vertex<K, V> * temp = iter->next;
 		iter->next = iter->next->next;
 		delete temp;
 		Vertex_count--;
@@ -94,23 +83,50 @@ void Graph<K, V>::remove_Vertex(const K & key) {
 }
 
 template <typename K, typename V>
-const V & Graph<K, V>::getWeight(const K & to) const {
-	Vertex<K, V> * v = findVertex(to);
+const V & Graph<K, V>::getDistance(const K & to) const {
+	Vertex<K, V> * v = *findVertex(to);
 	return v->distance;
 }
 
 template <typename K, typename V>
 void Graph<K, V>::printPath(const K & to) const {
-	const Vertex<K, V> * v = findVertex(to);
+	const Vertex<K, V> * v = *findVertex(to);
 	std::string path;
 	while (v->from != nullptr) {
 		path += " -> " + v->key;
 		v = v->from;
 	}
 	path = v->key + path;
-	cout << path << endl;
+	std::cout << path << std::endl;
 }
 
+template <typename K, typename V>
+void Graph<K, V>::printGraph() const {
+	Vertex<K, V> * iter = vertices;
+	if (iter == nullptr) { // there are no vertices
+		std::cout << "<none>" << std::endl;
+	}
+	else {
+		while (iter != nullptr) {
+			std::cout << iter->key << " ->";
+			Edge<K, V> * iter_e = iter->outgoing;
+			if (iter_e == nullptr) {std::cout << " <none>" << std::endl;} // there are no edges
+			else {
+				while (iter_e->next != nullptr) {
+					std::cout << " " << iter_e->to->key << ",";
+					iter_e = iter_e->next;
+				}
+				std::cout << " " << iter_e->to->key << std::endl; // last edge
+			}
+			iter = iter->next;
+		}
+	}
+}
+
+template <typename K, typename V>
+bool Graph<K, V>::isAltered() const {
+	return graph_altered;
+}
 // Mark: Class Graph | Single Source Shortest Path Function Definitions
 
 template <typename K, typename V>
@@ -154,11 +170,30 @@ void Graph<K, V>::bellman_ford(const K & source_key) {
 // Class Graph | Private Member Function Definitions
 
 template <typename K, typename V>
-Vertex<K, V> *& Graph<K, V>::findVertex(const K & key) const {
+Vertex<K, V> ** Graph<K, V>::findVertex(const K & key) const {
 	Vertex<K, V> * iter = vertices;
 	while (iter != nullptr && iter->key != key) { iter = iter->next; }
 	if (iter == nullptr) throw VertexNotFoundException();
-	return iter;
+	Vertex<K, V> ** foundVertex = &iter;
+	return foundVertex;
+}
+
+template <typename K, typename V>
+void Graph<K, V>::newEdge(const K & from, const K & to, const V & weight) {
+	// 1) Find Vertex `from`
+	Vertex<K, V> * v = *findVertex(from);
+	// 2) Find Vertex `to`
+	Vertex<K, V> * v_to = *findVertex(to);
+	// 3) Insert the new Edge
+	if (v->tail == nullptr) {
+		v->outgoing = new Edge<K, V>(weight, v_to);
+		v->tail = v->outgoing;
+	}
+	else {
+		v->tail->next = new Edge<K, V>(weight, v_to);
+		v->tail = v->tail->next;
+	}
+	graph_altered = true;
 }
 
 template <typename K, typename V>

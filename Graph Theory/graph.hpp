@@ -2,7 +2,8 @@
 #define _GRAPH_H
 
 // ADJACENCY LIST REPRESENTATION
-
+#include <limits.h>
+#include <string>
 #define INFINITY INT_MAX
 
 template <typename K, typename V> class Edge;
@@ -33,7 +34,7 @@ public:
 template <typename K, typename V>
 class Graph {
 public:
-	Graph();
+	Graph(bool undirected = false);
 	~Graph();
 
 	// Utilities
@@ -41,28 +42,33 @@ public:
 	void insert_Edge(const K & from, const K & to, const V & weight);
 	void remove_Edge(const K & from, const K & to);
 	void remove_Vertex(const K & key);
-	const V & getWeight(const K & to) const;
+	const V & getDistance(const K & to) const;
 	void printPath(const K & to) const;
+	void printGraph() const;
+	bool isAltered() const;
 
 	// Single source shortest path algorithms
 	void bellman_ford(const K & source_key);
 private:
 	bool graph_altered;
+	bool undirected;
 	Vertex<K, V> * vertices, * tail, * source;
 	unsigned Vertex_count = 0;
 
-	Vertex<K, V> *& findVertex(const K & key) const;
+	Vertex<K, V> ** findVertex(const K & key) const;
 	void makeEmpty();
+	void newEdge(const K & from, const K & to, const V & weight);
 	void setInitialDistance(const K & source_key);
 };
 
 class GraphException {
 public:
-	GraphException(char * msg);
-	~GraphException();
-	const char * const what() const;
+	GraphException(std::string msg) : msg(msg) {}
+	char const * const what() const noexcept {
+		return msg.c_str();
+	}
 private:
-	const char * const msg;
+	std::string msg;
 };
 
 class EdgeNotFoundException : public GraphException {
