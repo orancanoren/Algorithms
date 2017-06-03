@@ -1,62 +1,76 @@
-#include "BST.h"
+#include "AVL.hpp"
 #include <iostream>
 
 using namespace std;
 
 #define max(a, b) a >= b ? a : b
 
-BST::BST() {
+AVL::AVL() {
 #ifdef _DEBUG
-	cout << "BST constructor invoked" << endl;
+	cout << "AVL constructor invoked" << endl;
 #endif
 	root = nullptr;
 }
 
-BST::~BST() {
+AVL::~AVL() {
 #ifdef _DEBUG
-	cout << "BST destructor invoked" << endl;
+	cout << "AVL destructor invoked" << endl;
 #endif
 	makeEmpty();
 }
 
-int BST::height(node * n) const {
+int AVL::height(node * n) const {
 	return n == nullptr ? -1 : n -> height;
 }
 
-void BST::insert(int item) {
-	insert(item, root);
+void AVL::insert(int item) {
+	insert(root, item);
 }
 
-void BST::remove(int item) {
-	remove(item, root);
+void AVL::remove(int item) {
+	remove(root, item);
 }
 
-void BST::makeEmpty() { makeEmpty(root); }
+void AVL::makeEmpty() { 
+	makeEmpty(root); 
+}
 
-int BST::maximum() const {
+int AVL::maximum() const {
 	return maximum(root);
 }
 
-// CLASS BST PRIVATE MEMBER FUNCTION DEFINITIONS
+int AVL::minimum() const {
+	return minimum(root);
+}
 
-void BST::insert(int item, node *& n) {
+bool AVL::contains(int item) const {
+	return contains(root, item);
+}
+
+bool AVL::isEmpty() const {
+	return root == nullptr;
+}
+
+// CLASS AVL PRIVATE MEMBER FUNCTION DEFINITIONS
+
+void AVL::insert(node *& n, int item) {
 	if (n == nullptr) n = new node(item);
-	else if (item < n -> key) insert(item, n -> left);
-	else insert(item, n -> right);
+	else if (item < n -> key) insert(n -> left,item);
+	else insert(n -> right, item);
 
 	balance(n);
 }
 
-void BST::remove(int item, node *& n) {
+void AVL::remove(node *& n, int item) {
 	if (n == nullptr) return;
 
-	if (item < n -> key) remove(item, n -> left);
-	else if (n -> key < item) remove(item, n -> right);
+	if (item < n -> key) remove(n->left, item);
+	else if (n -> key < item) remove(n->right, item);
 	
 	// node found! 
 	else if (n -> right != nullptr && n -> left != nullptr) { // two children
 		n -> key = minimum(n -> right);
-		remove(n -> key, n -> right); // remove the copied item
+		remove(n->right, n -> key); // remove the copied item
 	}
 	else {
 		node * oldNode = n;
@@ -67,7 +81,7 @@ void BST::remove(int item, node *& n) {
 	balance(n);
 }
 
-void BST::balance(node *& n) {
+void AVL::balance(node *& n) {
 	if (n == nullptr) return;
 
 	if (height(n -> left) - height(n -> right) > 1) {
@@ -85,7 +99,7 @@ void BST::balance(node *& n) {
 	n -> height = max(height(n-> left), height(n -> right)) + 1;
 }
 
-void BST::rotateWithLeftChild(node *& n) {
+void AVL::rotateWithLeftChild(node *& n) {
 	node * x = n -> left;
 	n -> left = x -> right;
 	x -> right = n;
@@ -93,7 +107,7 @@ void BST::rotateWithLeftChild(node *& n) {
 	n = x;
 }
 
-void BST::rotateWithRightChild(node *& n) {
+void AVL::rotateWithRightChild(node *& n) {
 	node * x = n -> right;
 	n -> right = x -> left;
 	x -> left = n;
@@ -101,23 +115,24 @@ void BST::rotateWithRightChild(node *& n) {
 	n = x;
 }
 
-void BST::doubleWithLeftChild(node *& n) {
+void AVL::doubleWithLeftChild(node *& n) {
 	rotateWithRightChild(n -> left);
 	rotateWithLeftChild(n);
 }
 
-void BST::doubleWithRightChild(node *& n) {
+void AVL::doubleWithRightChild(node *& n) {
 	rotateWithLeftChild(n -> right);
 	rotateWithRightChild(n);
 }
 
-int BST::minimum(node * n) const {
+int AVL::minimum(node * n) const {
 	if (n == nullptr) return -1;
 	while (n -> left != nullptr) n = n -> left;
 	return n -> key;
 }
 
-void BST::makeEmpty(node *& n) {
+void AVL::makeEmpty(node *& n) {
+	// TODO: Recursive execution will create unnecessary call stack, write this iterative
 	if (n != nullptr) {
 		makeEmpty(n -> left);
 		makeEmpty(n -> right);
@@ -125,8 +140,20 @@ void BST::makeEmpty(node *& n) {
 	}
 }
 
-int BST::maximum(node * n) const {
+int AVL::maximum(node * n) const {
 	if (n == nullptr) return -1;
 	while (n -> right != nullptr) n = n -> right;
 	return n -> key;
+}
+
+bool AVL::contains(node * n, int item) const {
+	if (n == nullptr) { // item is not present in the tree
+		return false;
+	}
+	else if (item < n->key) {
+		return contains(n -> left, item);
+	}
+	else {
+		return contains(n -> right, item);
+	}
 }

@@ -1,5 +1,5 @@
-#ifndef _BST_H
-#define _BST_H
+#ifndef _AVL_H
+#define _AVL_H
 
 struct node {
 	node * left;
@@ -12,18 +12,19 @@ struct node {
 
 // AVL tree
 
-class BST {
+class AVL {
 public:
-	BST();
-	~BST();
+	AVL();
+	~AVL();
 
 	void insert(int item);
 	void remove(int item);
 
-	bool search(int item) const;
+	bool contains(int item) const;
 	int minimum() const;
 	int maximum() const;
 	void makeEmpty();
+	bool isEmpty() const;
 private:
 	node * root;
 
@@ -33,12 +34,13 @@ private:
 	void doubleWithRightChild(node *&);
 
 	int height(node *) const; // returns the height of a node | returns -1 if nullptr
-	void insert(int item, node *&);
-	void remove(int item, node *&);
+	void insert(node *&, int item);
+	void remove(node *&, int item);
 	void balance(node *& subroot);
 	void makeEmpty(node *&);
 	int minimum(node *) const;
 	int maximum(node *) const;
+	bool contains(node *, int item) const;
 };
 
 #endif
