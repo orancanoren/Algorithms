@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Data Structures\AVL Tree\AVL.cpp" />
+    <ClCompile Include="Data Structures\AVL Tree\main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{815F7F68-3AC4-4A7C-B3D1-5B007D50EAD4}</ProjectGuid>

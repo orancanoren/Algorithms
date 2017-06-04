@@ -8,7 +8,10 @@ using namespace std;
 void generateTree(AVL & tree) {/*
 	srand(17);
 	tree.insert(rand());*/
-	cout << "generate tree";
+	srand(17);
+	for (int i = 0; i < 5000000; i++) {
+		tree.insert(rand());
+	}
 }
 
 void emptyTree(AVL & tree) {
