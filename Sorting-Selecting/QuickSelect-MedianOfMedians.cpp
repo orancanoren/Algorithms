@@ -3,6 +3,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <math.h>
+#include <algorithm>
 
 #define _DEBUG
 
@@ -12,6 +13,7 @@ int quickSelect(vector<int> &, int , int, int);
 
 int median5(vector<int> & arr, int low, int high) {
 	// Post condition: returns the index of the median of the sub list [low..high]
+
 	// insertionSort the chunk
 	for (int i = low; i < high-1; i++) {
 		for (int j = i+1; j < high; j++) {
@@ -70,6 +72,11 @@ int quickSelect(vector<int> & arr, int low, int high, int order) {
 	return pivotIndex;
 }
 
+bool verifySelection(vector<int> & arr, int order, int foundNumber) {
+	sort(arr.begin(), arr.end());
+	return arr[order] == foundNumber;
+}
+
 vector<int> * generateRandArr(int size) {
 #ifdef _DEBUG
 	cout << "Allocating " << sizeof(int)*size << " bytes" << endl;
@@ -104,7 +111,13 @@ int main() {
 	cin >> order;
 	try {
 		if (order >= randArr.size()) throw "Order out of range";
-		quickSelect(randArr, 0, randArr.size()-1, order);
+		auto begin = chrono::high_resolution_clock::now();
+		int number = quickSelect(randArr, 0, randArr.size()-1, order);
+		auto end = chrono::high_resolution_clock::now();
+		cout << "The " << order << " order statistic has been found in"
+			<< chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " ms" << endl
+			<< "Verifying the statistic" << endl;
+		cout << "Verification resulted in a " << (verifySelection(randArr, order, number) ? "success" : "failure") << endl;
 	}
 	catch (const char & msg) {
 		cout << "Error: " << msg;

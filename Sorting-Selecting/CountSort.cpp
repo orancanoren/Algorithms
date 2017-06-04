@@ -55,7 +55,7 @@ int main() {
 	int size;
 	cin >> size;
 	int range;
-	cout << "Enter the range of the numbers" << endl
+	cout << "Enter the upper limit for the numbers in the array" << endl
 		 << ">> ";
 	cin >> range;
 	vector<int> randArr = *generateRandArr(size, range);

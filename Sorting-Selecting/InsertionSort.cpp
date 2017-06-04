@@ -35,13 +35,13 @@ vector<int> * generateVector() {
 }
 
 void insertionSort(vector<int> & vec) {
-	// Post condition: Sorts the vector in increasing order
 	int vecSize = vec.size();
+	// The loop invariant is that the first i elements are sorted where i is the iteration count
 	for (int i = 1; i < vecSize; i++) {
-		int j = i;
-		while (j > 0 && vec[j-1] > vec[j]) {
-			swap(vec[j], vec[j-1]);
-			j--;
+		int iter = i;
+		while (iter > 0 && vec[iter - 1] > vec[iter]) {
+			swap(vec[iter], vec[iter - 1]);
+			iter--;
 		}
 	}
 }
