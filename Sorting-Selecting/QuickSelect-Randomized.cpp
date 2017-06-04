@@ -4,47 +4,18 @@
 #include <stdlib.h>
 #include <math.h>
 #include <algorithm> // std::sort [for selection verification]
-
-#define _DEBUG
+#include <random>
 
 using namespace std;
 
-int partition5(vector<int> & arr, int low, int high) {
-	// Post-condition: returns the index of the median of the subgroup
-	/*
-	for (int i = low; i <= high; i++) {
-		int iter = i;
-		while (iter >= low && arr[iter] > arr[iter + 1]) {
-			swap(arr[iter], arr[iter + 1]);
-			iter--;
-		}
-	} */
-	sort(arr.begin() + low, arr.begin() + high);
-	return (low + high) / 2;
-}
-
-int medianOfMedians(vector<int> & arr, int low, int high) {
-	if (high - low < 5) { // if there are 5 or fewer elements, compute the median directly
-		return partition5(arr, low, high);
-	}
-	else {
-		int medianLocator = 0;
-		for (int i = low; i < high; i += 5) { // take subgroups of at most 5 elements
-			int subgroupRight = i + 4 > high ? (i + 4) : high;
-			int median5 = partition5(arr, i, subgroupRight);
-			// accumulate subgroup medians at the beginning of the array
-			swap(arr[median5], arr[medianLocator]);
-			medianLocator++;
-		}
-		// we have the subgroup medians accumulated at the first <medianLocator> indexes,
-		// recursively obtain the true median by finding the median of the subgroup medians
-		return medianOfMedians(arr, 0, medianLocator);
-	}
-}
+#define _DEBUG
 
 int partition(vector<int> & arr, int low, int high) {
 	// Set up a uniformly distributed number generator
-	int pivotIndex = medianOfMedians(arr, low, high);
+	random_device rd;
+	mt19937 randomNumGenerator(rd());
+	uniform_int_distribution<int> uni(low, high);
+	int pivotIndex = uni(randomNumGenerator);
 	int pivot = arr[pivotIndex];
 
 	swap(arr[pivotIndex], arr[high]); // relocate the pivot to the right end
@@ -53,13 +24,13 @@ int partition(vector<int> & arr, int low, int high) {
 	while (right > left) {
 		if (!leftStopped && arr[left] <= pivot) { // we want left of the pivot to contain numbers smaller than the pivot
 			left++;
-		}
+		} 
 		else leftStopped = true;
 		if (!rightStopped && arr[right] >= pivot) { // we want right of the pivot to contain numbers greater than the pivot
 			right--;
-		}
+		} 
 		else rightStopped = true;
-
+		
 		if (leftStopped && rightStopped) { // when both iterators stopped, this means that we can finally swap the two
 			swap(arr[left], arr[right]);
 			left++;
@@ -72,7 +43,7 @@ int partition(vector<int> & arr, int low, int high) {
 	if (leftStopped) {
 		pivotIndex = left;
 		swap(arr[high], arr[pivotIndex]);
-	}
+	} 
 	else if (rightStopped) {
 		pivotIndex = right + 1;
 		swap(arr[high], arr[pivotIndex]);
@@ -115,37 +86,37 @@ vector<int> * generateRandArr(int size) {
 #ifdef _DEBUG
 	cout << "Randomizing the array" << endl;
 #endif
-	auto iter = arr->begin();
+	auto iter = arr -> begin();
 	auto begin = chrono::high_resolution_clock::now();
 	for (int i = 0; i < size; i++, iter++) {
 		*iter = rand();
 	}
 	auto end = chrono::high_resolution_clock::now();
-	cout << "Randomization complete in " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " ms" << endl;
+	cout << "Randomization complete in " << chrono::duration_cast<chrono::milliseconds>(end-begin).count() << " ms" << endl;
 	return arr;
 }
 
 int main() {
 	srand(17);
 	cout << "-------------------------" << endl
-		<< "Quick Select (Median of Medians)" << endl
-		<< "-------------------------" << endl
-		<< "Fun fact: This is a Las Vegas algorithm" << endl
-		<< "-------------------------" << endl
-		<< "Enter the size of the array" << endl
-		<< ">> ";
+		 << "Quick Select (Randomized)" << endl
+		 << "-------------------------" << endl
+		 << "Fun fact: This is a Las Vegas algorithm" << endl
+		 << "-------------------------" << endl
+		 << "Enter the size of the array" << endl
+		 << ">> ";
 	int size;
 	cin >> size;
 	vector<int> randArr = *generateRandArr(size);
 	cout << "Which order statistic would you like to find?" << endl
-		<< ">> ";
+		 << ">> ";
 	int order;
 	cin >> order;
 	order -= 1;
 	try {
 		if (order >= randArr.size()) throw "Order out of range";
 		auto begin = chrono::high_resolution_clock::now();
-		int number = randArr[quickSelect(randArr, 0, randArr.size() - 1, order)];
+		int number = randArr[quickSelect(randArr, 0, randArr.size()-1, order)];
 		auto end = chrono::high_resolution_clock::now();
 		cout << "The " << order + 1 << "th order statistic has been found in "
 			<< chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " ms" << endl

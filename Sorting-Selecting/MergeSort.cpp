@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <stdlib.h> // for srand(), rand()
-#include <chrono> // for benchmarking purposes
+#include <stdlib.h> // srand(), rand()
+#include <chrono>
 
 using namespace std;
 
