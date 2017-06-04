@@ -40,3 +40,6 @@ include the CPP file in your project
 </ol>
 </li>
 </ul>
+<hr />
+<h2>Known Bugs</h2>
+Randomized select and median of medians both fail in some cases; also median of medians take very long time, I probably did something redundant there. Will look into it.
