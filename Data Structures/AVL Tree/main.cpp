@@ -5,9 +5,10 @@
 
 using namespace std;
 
-void generateTree(AVL & tree) {
+void generateTree(AVL & tree) {/*
 	srand(17);
-	tree.insert(rand());
+	tree.insert(rand());*/
+	cout << "generate tree";
 }
 
 void emptyTree(AVL & tree) {

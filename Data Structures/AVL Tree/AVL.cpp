@@ -19,10 +19,6 @@ AVL::~AVL() {
 	makeEmpty();
 }
 
-int AVL::height(node * n) const {
-	return n == nullptr ? -1 : n -> height;
-}
-
 void AVL::insert(int item) {
 	insert(root, item);
 }
@@ -53,6 +49,36 @@ bool AVL::isEmpty() const {
 
 // CLASS AVL PRIVATE MEMBER FUNCTION DEFINITIONS
 
+void AVL::rotateWithLeftChild(node *& n) {
+	node * x = n->left;
+	n->left = x->right;
+	x->right = n;
+	x->height = max(height(x->left), height(x->right)) + 1;
+	n = x;
+}
+
+void AVL::rotateWithRightChild(node *& n) {
+	node * x = n->right;
+	n->right = x->left;
+	x->left = n;
+	x->height = max(height(x->left), height(x->right)) + 1;
+	n = x;
+}
+
+void AVL::doubleWithLeftChild(node *& n) {
+	rotateWithRightChild(n->left);
+	rotateWithLeftChild(n);
+}
+
+void AVL::doubleWithRightChild(node *& n) {
+	rotateWithLeftChild(n->right);
+	rotateWithRightChild(n);
+}
+
+int AVL::height(node * n) const {
+	return n == nullptr ? -1 : n->height;
+}
+
 void AVL::insert(node *& n, int item) {
 	if (n == nullptr) n = new node(item);
 	else if (item < n -> key) insert(n -> left,item);
@@ -81,6 +107,15 @@ void AVL::remove(node *& n, int item) {
 	balance(n);
 }
 
+void AVL::makeEmpty(node *& n) {
+	// TODO: Recursive execution will create unnecessary call stack, write this iterative
+	if (n != nullptr) {
+		makeEmpty(n->left);
+		makeEmpty(n->right);
+		delete n;
+	}
+}
+
 void AVL::balance(node *& n) {
 	if (n == nullptr) return;
 
@@ -99,30 +134,10 @@ void AVL::balance(node *& n) {
 	n -> height = max(height(n-> left), height(n -> right)) + 1;
 }
 
-void AVL::rotateWithLeftChild(node *& n) {
-	node * x = n -> left;
-	n -> left = x -> right;
-	x -> right = n;
-	x -> height = max(height(x -> left), height(x -> right)) + 1;
-	n = x;
-}
-
-void AVL::rotateWithRightChild(node *& n) {
-	node * x = n -> right;
-	n -> right = x -> left;
-	x -> left = n;
-	x -> height = max(height(x -> left), height(x -> right)) + 1;
-	n = x;
-}
-
-void AVL::doubleWithLeftChild(node *& n) {
-	rotateWithRightChild(n -> left);
-	rotateWithLeftChild(n);
-}
-
-void AVL::doubleWithRightChild(node *& n) {
-	rotateWithLeftChild(n -> right);
-	rotateWithRightChild(n);
+int AVL::maximum(node * n) const {
+	if (n == nullptr) return -1;
+	while (n->right != nullptr) n = n->right;
+	return n->key;
 }
 
 int AVL::minimum(node * n) const {
@@ -131,29 +146,14 @@ int AVL::minimum(node * n) const {
 	return n -> key;
 }
 
-void AVL::makeEmpty(node *& n) {
-	// TODO: Recursive execution will create unnecessary call stack, write this iterative
-	if (n != nullptr) {
-		makeEmpty(n -> left);
-		makeEmpty(n -> right);
-		delete n;
-	}
-}
-
-int AVL::maximum(node * n) const {
-	if (n == nullptr) return -1;
-	while (n -> right != nullptr) n = n -> right;
-	return n -> key;
-}
-
 bool AVL::contains(node * n, int item) const {
 	if (n == nullptr) { // item is not present in the tree
 		return false;
 	}
 	else if (item < n->key) {
-		return contains(n -> left, item);
+		return contains(n->left, item);
 	}
 	else {
-		return contains(n -> right, item);
+		return contains(n->right, item);
 	}
 }

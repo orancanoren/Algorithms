@@ -20,10 +20,10 @@ public:
 	void insert(int item);
 	void remove(int item);
 
-	bool contains(int item) const;
-	int minimum() const;
-	int maximum() const;
 	void makeEmpty();
+	int maximum() const;
+	int minimum() const;
+	bool contains(int item) const;
 	bool isEmpty() const;
 private:
 	node * root;
@@ -33,11 +33,11 @@ private:
 	void doubleWithLeftChild(node *&);
 	void doubleWithRightChild(node *&);
 
-	int height(node *) const; // returns the height of a node | returns -1 if nullptr
+	int height(node *) const;
 	void insert(node *&, int item);
 	void remove(node *&, int item);
-	void balance(node *& subroot);
 	void makeEmpty(node *&);
+	void balance(node *& subroot);
 	int minimum(node *) const;
 	int maximum(node *) const;
 	bool contains(node *, int item) const;

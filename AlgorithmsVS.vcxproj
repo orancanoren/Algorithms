@@ -19,11 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="data structures\avl tree\AVL.cpp" />
-    <ClCompile Include="Data Structures\AVL Tree\main.cpp" />
+    <ClInclude Include="Data Structures\AVL Tree\AVL.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="data structures\avl tree\AVL.hpp" />
+    <ClCompile Include="Data Structures\AVL Tree\AVL.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{815F7F68-3AC4-4A7C-B3D1-5B007D50EAD4}</ProjectGuid>
