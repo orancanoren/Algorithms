@@ -22,11 +22,11 @@ int partition(vector<int> & arr, int low, int high) {
 	int left = low, right = high; // set left & right iterators
 	bool leftStopped = false, rightStopped = false;
 	while (right > left) {
-		if (!leftStopped && arr[left] <= pivot) { // we want left of the pivot to contain numbers smaller than the pivot
+		if (!leftStopped && arr[left] <= pivot) { // we want left of the pivot to contain numbers smaller or equal to the pivot
 			left++;
 		} 
 		else leftStopped = true;
-		if (!rightStopped && arr[right] >= pivot) { // we want right of the pivot to contain numbers greater than the pivot
+		if (!rightStopped && arr[right] >= pivot) { // we want right of the pivot to contain numbers greater or equal to the pivot
 			right--;
 		} 
 		else rightStopped = true;
@@ -48,9 +48,14 @@ int partition(vector<int> & arr, int low, int high) {
 		pivotIndex = right + 1;
 		swap(arr[high], arr[pivotIndex]);
 	}
-	else {
-		pivotIndex = left;
-		if (right + 1 <= high) swap(arr[high], arr[right + 1]);
+	else { // neither of them has stopped
+		if (arr[left] > pivot) {
+			pivotIndex = left;
+		}
+		else {
+			pivotIndex = (left + 1) > high ? left : (left + 1);
+		}
+		swap(arr[pivotIndex], arr[high]);
 	}
 	return pivotIndex;
 }
@@ -62,7 +67,8 @@ int quickSelect(vector<int> & arr, int low, int high, int order) {
 	//				order -> the rank of the item to be searched
 	// Post-Condition: Returns the index of the requested order statistic
 
-	int pivotIndex = partition(arr, low, high), pivot = arr[pivotIndex];
+	int pivotIndex = partition(arr, low, high);
+	int pivot = arr[pivotIndex];
 
 	if (pivotIndex == order) return pivotIndex;
 	else if (order > pivotIndex) {
@@ -112,7 +118,7 @@ int main() {
 		 << ">> ";
 	int order;
 	cin >> order;
-	order -= 1;
+	order -= 1; // order is now 0-based
 	try {
 		if (order >= randArr.size()) throw "Order out of range";
 		auto begin = chrono::high_resolution_clock::now();

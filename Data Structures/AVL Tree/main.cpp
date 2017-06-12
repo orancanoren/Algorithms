@@ -9,7 +9,7 @@ void generateTree(AVL & tree) {/*
 	srand(17);
 	tree.insert(rand());*/
 	srand(17);
-	for (int i = 0; i < 5000000; i++) {
+	for (int i = 0; i < 5000; i++) {
 		tree.insert(rand());
 	}
 }

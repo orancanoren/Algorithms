@@ -43,6 +43,7 @@ int getOption() {
 		cout << "Invalid input" << endl;
 		return getOption();
 	}
+	else return option;
 }
 
 int main() {

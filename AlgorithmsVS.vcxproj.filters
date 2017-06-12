@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sorting-Selecting\QuickSelect-Randomized.cpp">
+    <ClCompile Include="Misc\MergingIntervals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

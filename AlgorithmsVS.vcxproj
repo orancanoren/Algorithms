@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sorting-Selecting\QuickSelect-Randomized.cpp" />
+    <ClCompile Include="Misc\MergingIntervals.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{97AC8252-3211-45D6-B3A8-1CE6B96B446A}</ProjectGuid>

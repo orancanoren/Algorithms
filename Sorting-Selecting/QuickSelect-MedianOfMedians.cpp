@@ -5,20 +5,29 @@
 #include <math.h>
 #include <algorithm> // std::sort [for selection verification]
 
+// CASE 87974 - 456
+
 #define _DEBUG
 
 using namespace std;
 
+bool verifyPartition(const vector<int> & arr, int low, int high, int pivotIndex) { // FOR DEBUGGING PURPOSES
+	auto iterator = arr.begin() + low;
+	int pivot = arr[pivotIndex];
+	for (int i = low; i < pivotIndex; i++) { // iterate array range [low, pivotIndex)
+		if (*iterator > pivot) return false;
+		iterator++;
+	}
+	for (int i = pivotIndex; i <= high; i++) { // iterate array range [pivotIndex, high]
+		if (*iterator < pivot) return false;
+		iterator++;
+	}
+	return true;
+}
+
 int partition5(vector<int> & arr, int low, int high) {
 	// Post-condition: returns the index of the median of the subgroup
-	/*
-	for (int i = low; i <= high; i++) {
-		int iter = i;
-		while (iter >= low && arr[iter] > arr[iter + 1]) {
-			swap(arr[iter], arr[iter + 1]);
-			iter--;
-		}
-	} */
+
 	sort(arr.begin() + low, arr.begin() + high);
 	return (low + high) / 2;
 }
@@ -30,7 +39,7 @@ int medianOfMedians(vector<int> & arr, int low, int high) {
 	else {
 		int medianLocator = 0;
 		for (int i = low; i < high; i += 5) { // take subgroups of at most 5 elements
-			int subgroupRight = i + 4 > high ? (i + 4) : high;
+			int subgroupRight = (i + 4) > high ? high : (i + 4);
 			int median5 = partition5(arr, i, subgroupRight);
 			// accumulate subgroup medians at the beginning of the array
 			swap(arr[median5], arr[medianLocator]);
@@ -43,7 +52,6 @@ int medianOfMedians(vector<int> & arr, int low, int high) {
 }
 
 int partition(vector<int> & arr, int low, int high) {
-	// Set up a uniformly distributed number generator
 	int pivotIndex = medianOfMedians(arr, low, high);
 	int pivot = arr[pivotIndex];
 
@@ -51,11 +59,11 @@ int partition(vector<int> & arr, int low, int high) {
 	int left = low, right = high; // set left & right iterators
 	bool leftStopped = false, rightStopped = false;
 	while (right > left) {
-		if (!leftStopped && arr[left] <= pivot) { // we want left of the pivot to contain numbers smaller than the pivot
+		if (!leftStopped && arr[left] <= pivot) { // we want left of the pivot to contain numbers smaller or equal to the pivot
 			left++;
 		}
 		else leftStopped = true;
-		if (!rightStopped && arr[right] >= pivot) { // we want right of the pivot to contain numbers greater than the pivot
+		if (!rightStopped && arr[right] >= pivot) { // we want right of the pivot to contain numbers greater or equal to the pivot
 			right--;
 		}
 		else rightStopped = true;
@@ -77,9 +85,14 @@ int partition(vector<int> & arr, int low, int high) {
 		pivotIndex = right + 1;
 		swap(arr[high], arr[pivotIndex]);
 	}
-	else {
-		pivotIndex = left;
-		if (right + 1 <= high) swap(arr[high], arr[right + 1]);
+	else { // neither of them has stopped
+		if (arr[left] > pivot) {
+			pivotIndex = left;
+		}
+		else {
+			pivotIndex = (left + 1) > high ? left : (left + 1);
+		}
+		swap(arr[pivotIndex], arr[high]);
 	}
 	return pivotIndex;
 }
@@ -91,7 +104,12 @@ int quickSelect(vector<int> & arr, int low, int high, int order) {
 	//				order -> the rank of the item to be searched
 	// Post-Condition: Returns the index of the requested order statistic
 
-	int pivotIndex = partition(arr, low, high), pivot = arr[pivotIndex];
+	int pivotIndex = partition(arr, low, high);
+	int pivot = arr[pivotIndex];
+	if (!verifyPartition(arr, low, high, pivotIndex)) {
+		cout << "Partitioning has failed!";
+		exit(1);
+	}
 
 	if (pivotIndex == order) return pivotIndex;
 	else if (order > pivotIndex) {
@@ -130,8 +148,6 @@ int main() {
 	cout << "-------------------------" << endl
 		<< "Quick Select (Median of Medians)" << endl
 		<< "-------------------------" << endl
-		<< "Fun fact: This is a Las Vegas algorithm" << endl
-		<< "-------------------------" << endl
 		<< "Enter the size of the array" << endl
 		<< ">> ";
 	int size;
@@ -141,7 +157,7 @@ int main() {
 		<< ">> ";
 	int order;
 	cin >> order;
-	order -= 1;
+	order -= 1; // order is now 0-based
 	try {
 		if (order >= randArr.size()) throw "Order out of range";
 		auto begin = chrono::high_resolution_clock::now();
