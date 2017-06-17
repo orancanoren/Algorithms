@@ -4,6 +4,7 @@
 // ADJACENCY LIST REPRESENTATION
 #include <limits.h>
 #include <string>
+#include <exception>
 #define INFINITY INT_MAX
 
 template <typename K, typename V> class Edge;
@@ -61,29 +62,55 @@ private:
 	void setInitialDistance(const K & source_key);
 };
 
-class GraphException {
+//
+// GRAPH EXCEPTION CLASS
+//
+
+enum ExceptionType {
+	UNKNOWN_EXCEPTION = 0, // shouldn't be thrown
+	UNKNOWN_EXCEPTION_STR, // same as above, includes additional info
+	NOT_FOUND,
+	NEGATIVE_WEIGHT_CYCLE,
+	CANNOT_REACH
+};
+
+class GraphException : public std::exception {
 public:
-	GraphException(std::string msg) : msg(msg) {}
-	char const * const what() const noexcept {
-		return msg.c_str();
+	GraphException(ExceptionType excType = UNKNOWN_EXCEPTION, const char * msg = "UNKNOWN_EXCEPTION")
+		: excType(excType), message(msg) { }
+
+	ExceptionType getExceptionType() const noexcept {
+		return excType;
+	}
+	
+	const char * what() noexcept {
+		return message;
 	}
 private:
-	std::string msg;
+	ExceptionType excType;
+	const char * message;
 };
 
-class EdgeNotFoundException : public GraphException {
-public:
-	EdgeNotFoundException() : GraphException("Edge not found!") { }
+enum Reason {
+	VERTEX_NOT_FOUND,
+	EDGE_NOT_FOUND
 };
 
-class VertexNotFoundException : public GraphException {
+class NotFound : public GraphException {
 public:
-	VertexNotFoundException() : GraphException("Vertex not found!") { }
+	NotFound(Reason reason) 
+		: GraphException(NOT_FOUND, ((reason == VERTEX_NOT_FOUND) ? "VERTEX NOT FOUND!" : "EDGE_NOT_FOUND")) { }
 };
 
-class NegativeWeightCycleException : public GraphException {
+class NegativeWeightCycle : public GraphException {
 public:
-	NegativeWeightCycleException() : GraphException("Negative Weight Cycle Detected") { }
+	NegativeWeightCycle() 
+		: GraphException(NEGATIVE_WEIGHT_CYCLE, "NEGATIVE WEIGHT CYCLE DETECTED!") {}
+};
+
+class CannotReach : public GraphException {
+public:
+	CannotReach() : GraphException(CANNOT_REACH, "CANNOT REACH TO SPECIFIED VERTEX") { }
 };
 
 #include "graph.cpp"

@@ -51,13 +51,17 @@ void Graph<K, V>::remove_Edge(const K & from, const K & to) {
 	}
 	else if (iter->next != nullptr) {
 		while (iter->next != nullptr && iter->next->to->key != to) { iter = iter->next; }
-		if (iter->next == nullptr) throw EdgeNotFoundException();
+		if (iter->next == nullptr) throw NotFound(EDGE_NOT_FOUND);
 		Edge<K, V> * temp = iter->next;
 		iter->next = iter->next->next;
 		delete temp;
 		graph_altered = true;
 	}
-	else throw EdgeNotFoundException();
+	
+	if (undirected) {
+		remove_Edge(to, from);
+	}
+	else throw NotFound(EDGE_NOT_FOUND);
 }
 
 template <typename K, typename V>
@@ -72,19 +76,22 @@ void Graph<K, V>::remove_Vertex(const K & key) {
 	}
 	else if (iter->next != nullptr) {
 		while (iter->next != nullptr && iter->next->key != key) { iter = iter->next; }
-		if (iter->next == nullptr) throw VertexNotFoundException();
+		if (iter->next == nullptr) throw NotFound(VERTEX_NOT_FOUND);
 		Vertex<K, V> * temp = iter->next;
 		iter->next = iter->next->next;
 		delete temp;
 		Vertex_count--;
 		graph_altered = true;
 	}
-	else throw VertexNotFoundException();
+	else throw NotFound(VERTEX_NOT_FOUND);
 }
 
 template <typename K, typename V>
 const V & Graph<K, V>::getDistance(const K & to) const {
 	Vertex<K, V> * v = *findVertex(to);
+	if (v->distance == INFINITY) {
+		throw CannotReach();
+	}
 	return v->distance;
 }
 
@@ -127,17 +134,20 @@ template <typename K, typename V>
 bool Graph<K, V>::isAltered() const {
 	return graph_altered;
 }
+
 // Mark: Class Graph | Single Source Shortest Path Function Definitions
 
 template <typename K, typename V>
 void Graph<K, V>::bellman_ford(const K & source_key) {
 	if (!graph_altered) return; // no need to recalculate the distances if the graph hasn't been altered
+
 	// 1) Set initial distances
 	setInitialDistance(source_key);
 
 	// 2) Perform relaxation over all edges V-1 times
-	Vertex<K, V> * iter = vertices;
+	Vertex<K, V> * iter;
 	for (int i = 0; i < Vertex_count - 1; i++) {
+		iter = vertices;
 		while (iter != nullptr) {
 			Edge<K, V> * iter_e = iter->outgoing;
 			while (iter_e != nullptr) {
@@ -157,7 +167,7 @@ void Graph<K, V>::bellman_ford(const K & source_key) {
 		Edge<K, V> * iter_e = iter->outgoing;
 		while (iter_e != nullptr) {
 			if (iter->distance + iter_e->weight < iter_e->to->distance) {
-				throw NegativeWeightCycleException();
+				throw NegativeWeightCycle();
 			}
 			iter_e = iter_e->next;
 		}
@@ -173,7 +183,7 @@ template <typename K, typename V>
 Vertex<K, V> ** Graph<K, V>::findVertex(const K & key) const {
 	Vertex<K, V> * iter = vertices;
 	while (iter != nullptr && iter->key != key) { iter = iter->next; }
-	if (iter == nullptr) throw VertexNotFoundException();
+	if (iter == nullptr) throw NotFound(VERTEX_NOT_FOUND);
 	Vertex<K, V> ** foundVertex = &iter;
 	return foundVertex;
 }

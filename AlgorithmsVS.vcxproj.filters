@@ -15,7 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Misc\MergingIntervals.cpp">
+    <ClInclude Include="Graph Theory\graph.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Graph Theory\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

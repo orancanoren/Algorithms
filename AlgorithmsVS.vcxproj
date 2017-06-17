@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Misc\MergingIntervals.cpp" />
+    <ClInclude Include="Graph Theory\graph.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Graph Theory\main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{97AC8252-3211-45D6-B3A8-1CE6B96B446A}</ProjectGuid>
