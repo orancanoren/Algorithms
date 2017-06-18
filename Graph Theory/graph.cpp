@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <queue>
 
 template <typename K, typename V>
 Graph<K, V>::Graph(bool undirected)
@@ -177,10 +178,37 @@ void Graph<K, V>::bellman_ford(const K & source_key) {
 	graph_altered = false;
 }
 
+template <typename K, typename V>
+void Graph<K, V>::BFS(const K & source_key) {
+	queue<Vertex<K, V> *> BFSqueue;
+	Vertex<K, V> * source_ptr = *findVertex(source_key);
+	setInitialDistance(source_key);
+
+	BFSqueue.push(source_ptr);
+	while (!BFSqueue.empty()) {
+		Vertex<K, V> * frontElement_ptr = BFSqueue.front();
+		Edge<K, V> * iter = frontElement_ptr->outgoing;
+		BFSqueue.pop();
+
+		// look for unvisited neighbors of the front element that's just popped
+		while (iter != nullptr) {
+			if (!iter->to->known) {
+				iter->to->known = true;
+				iter->to->distance = frontElement_ptr->distance + 1;
+				BFSqueue.push(iter->to);
+			}
+			iter = iter->next;
+		}
+	}
+
+	graph_altered = false;
+}
+
 // Class Graph | Private Member Function Definitions
 
 template <typename K, typename V>
 Vertex<K, V> ** Graph<K, V>::findVertex(const K & key) const {
+	// Returns the address of the pointer to the found vertex
 	Vertex<K, V> * iter = vertices;
 	while (iter != nullptr && iter->key != key) { iter = iter->next; }
 	if (iter == nullptr) throw NotFound(VERTEX_NOT_FOUND);
@@ -231,6 +259,7 @@ void Graph<K, V>::setInitialDistance(const K & source_key) {
 	while (iter != nullptr) {
 		if (iter->key == source_key) {
 			iter->distance = 0;
+			iter->known = true;
 		}
 		else {
 			iter->distance = INFINITY;

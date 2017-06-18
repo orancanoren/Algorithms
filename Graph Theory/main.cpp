@@ -31,8 +31,9 @@ public:
 			<< "3. Remove an edge" << endl
 			<< "4. Remove a vertex" << endl
 			<< "5. Bellman Ford Shortest Path" << endl
-			<< "6. Get distance to a vertex" << endl
-			<< "7. Exit" << endl
+			<< "6. Breadth First Search" << endl
+			<< "7. Get distance to a vertex" << endl
+			<< "8. Exit" << endl
 			<< "Your choice: ";
 	}
 	void edge() {
@@ -91,6 +92,19 @@ public:
 			<< " ms" << endl;
 	}
 
+	void BFS() {
+		string source;
+		cout << "Enter the name of the source vertex" << endl
+			<< " >> ";
+		cin >> source;
+		auto begin = chrono::high_resolution_clock::now();
+		g.BFS(source);
+		auto end = chrono::high_resolution_clock::now();
+		cout << "Distance calculation has been completed in "
+			<< chrono::duration_cast<chrono::milliseconds>(end - begin).count() 
+			<< " ms" << endl;
+	}
+
 	void dist() {
 		if (g.isAltered()) {
 			cout << "You need to calculate the distance first!" << endl;
@@ -125,7 +139,7 @@ int main() {
 	do {
 		cout << "Current Graph:" << endl;
 		g.printGraph();
-		cout << "Enter a command (1-7) or 0 for menu" << endl
+		cout << "Enter a command (1-8) or 0 for menu" << endl
 			<< ">> ";
 		cin >> choice;
 		switch (choice) {
@@ -154,9 +168,13 @@ int main() {
 			break;
 		case 6:
 			system("CLS");
-			g.dist();
+			g.BFS();
 			break;
 		case 7:
+			system("CLS");
+			g.dist();
+			break;
+		case 8:
 			cout << "K THX BYE" << endl;
 			break;
 		default:
@@ -165,6 +183,6 @@ int main() {
 			cin.clear();
 			break;
 		}
-	} while (choice != 7);
+	} while (choice != 8);
 	return 0;
 }

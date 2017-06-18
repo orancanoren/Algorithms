@@ -12,6 +12,9 @@ template <typename K, typename V> class Edge;
 template <typename K, typename V>
 class Vertex {
 public:
+	Vertex(const K & k)
+		: key(k), next(nullptr), distance(INFINITY), outgoing(nullptr), from(nullptr), tail(nullptr), known(false) { }
+
 	K key;
 	Vertex<K, V> * from; /* we keep the Vertex that we have reached to
 				   the current one from so that we can find the
@@ -19,8 +22,7 @@ public:
 	Vertex<K, V> * next; // keep a linked list of vertices
 	Edge<K, V> * outgoing, *tail; // keep the outgoing Edges from the current Vertex in a linked list
 	V distance; // keep the distance to the source Vertex
-	Vertex(const K & k)
-		: key(k), next(nullptr), distance(INFINITY), outgoing(nullptr), from(nullptr), tail(nullptr) { }
+	bool known;
 };
 
 template <typename K, typename V>
@@ -50,6 +52,7 @@ public:
 
 	// Single source shortest path algorithms
 	void bellman_ford(const K & source_key);
+	void BFS(const K & source_key);
 private:
 	bool graph_altered;
 	bool undirected;
