@@ -12,16 +12,15 @@ include the CPP file in your project
 </ul>
 <hr />
 <p><strong>Currently working on</strong> <i>graph theory</i></p>
-<p>Completed as of April 2:</p>
 <ul>
 <li>Adjacency List Representation</li>
 <li>Graph Exceptions Class</li>
 <li>Bellman-Ford Algorithm</li>
+<li>Breadth First Search</li>
 </ul>
 <p>To be completed:</p>
 <ul>
 <li>Dijsktra's Shortest Path</li>
-<li>Breadth First Search</li>
 <li>Depth First Search</li>
 <li>Floyd-Warshall Algorithm</li>
 <li>Topological Sort</li>
