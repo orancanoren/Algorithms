@@ -13,7 +13,7 @@ include the CPP file in your project
 <hr />
 <p><strong>Currently working on</strong> <i>graph theory</i></p>
 <ul>
-<li>Adjacency List Representation</li>
+<li>Graph Structure & Mutating Operations</li>
 <li>Graph Exceptions Class</li>
 <li>Bellman-Ford Algorithm</li>
 <li>Breadth First Search</li>
