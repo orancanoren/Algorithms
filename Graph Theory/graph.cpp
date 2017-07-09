@@ -2,7 +2,6 @@
 #include <string>
 #include <queue>
 #include <stack>
-#include <functional>
 #include <vector>
 
 template <typename K, typename V>
@@ -277,9 +276,4 @@ void Graph<K, V>::setInitialDistance(const K & source_key) {
 		}
 		iter = iter->next;
 	}
-}
-
-template <typename K, typename V>
-vector<int> Graph<K, V>::ORDERING_GENERATION(Graph<K, V> dendrogram) {
-
 }

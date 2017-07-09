@@ -70,9 +70,9 @@ private:
 	void setInitialDistance(const K & source_key);
 };
 
-//
+// =====================
 // GRAPH EXCEPTION CLASS
-//
+// =====================
 
 enum ExceptionType {
 	UNKNOWN_EXCEPTION = 0, // shouldn't be thrown
