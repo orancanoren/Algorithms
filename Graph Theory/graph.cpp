@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <stack>
+#include <functional>
+#include <vector>
 
 template <typename K, typename V>
 Graph<K, V>::Graph(bool undirected)
 	: undirected(undirected), vertices(nullptr), tail(nullptr) {
-	graph_altered = true;
 	Vertex_count = 0;
 }
 
@@ -28,7 +30,6 @@ void Graph<K, V>::insert_Vertex(const K & key) {
 		tail = tail->next;
 	}
 	Vertex_count++;
-	graph_altered = true;
 }
 
 template <typename K, typename V>
@@ -45,10 +46,10 @@ void Graph<K, V>::remove_Edge(const K & from, const K & to) {
 	Vertex<K, V> * v = *findVertex(from);
 	// 2) Find the Edge
 	Edge<K, V> * iter = v->outgoing;
+	if (iter->next == nullptr)
 	if (iter->to->key == to) {
 		delete iter;
 		v->outgoing = nullptr;
-		graph_altered = true;
 	}
 	else if (iter->next != nullptr) {
 		while (iter->next != nullptr && iter->next->to->key != to) { iter = iter->next; }
@@ -56,7 +57,6 @@ void Graph<K, V>::remove_Edge(const K & from, const K & to) {
 		Edge<K, V> * temp = iter->next;
 		iter->next = iter->next->next;
 		delete temp;
-		graph_altered = true;
 	}
 	
 	if (undirected) {
@@ -67,22 +67,20 @@ void Graph<K, V>::remove_Edge(const K & from, const K & to) {
 
 template <typename K, typename V>
 void Graph<K, V>::remove_Vertex(const K & key) {
-	Vertex<K, V> * iter = vertices;
-	if (iter->key == key) {
-		Vertex<K, V> * temp = vertices;
+	Vertex<K, V> * toBeDeleted, * iter = vertices;
+	if (vertices->key == key) { // first element in the linked list will be deleted
+		toBeDeleted = vertices;
+		if (toBeDeleted->outgoing != nullptr) throw HangingEdge();
 		vertices = vertices->next;
-		delete temp;
-		Vertex_count--;
-		graph_altered = true;
+		delete toBeDeleted;
 	}
 	else if (iter->next != nullptr) {
 		while (iter->next != nullptr && iter->next->key != key) { iter = iter->next; }
 		if (iter->next == nullptr) throw NotFound(VERTEX_NOT_FOUND);
-		Vertex<K, V> * temp = iter->next;
+		toBeDeleted = iter->next;
+		if (toBeDeleted->outgoing != nullptr) throw HangingEdge();
 		iter->next = iter->next->next;
-		delete temp;
-		Vertex_count--;
-		graph_altered = true;
+		delete toBeDeleted;
 	}
 	else throw NotFound(VERTEX_NOT_FOUND);
 }
@@ -131,17 +129,10 @@ void Graph<K, V>::printGraph() const {
 	}
 }
 
-template <typename K, typename V>
-bool Graph<K, V>::isAltered() const {
-	return graph_altered;
-}
-
 // Mark: Class Graph | Single Source Shortest Path Function Definitions
 
 template <typename K, typename V>
 void Graph<K, V>::bellman_ford(const K & source_key) {
-	if (!graph_altered) return; // no need to recalculate the distances if the graph hasn't been altered
-
 	// 1) Set initial distances
 	setInitialDistance(source_key);
 
@@ -174,9 +165,9 @@ void Graph<K, V>::bellman_ford(const K & source_key) {
 		}
 		iter = iter->next;
 	}
-
-	graph_altered = false;
 }
+
+// Mark: Class Graph | Graph Traversal Algorithm Definitions
 
 template <typename K, typename V>
 void Graph<K, V>::BFS(const K & source_key) {
@@ -200,8 +191,30 @@ void Graph<K, V>::BFS(const K & source_key) {
 			iter = iter->next;
 		}
 	}
+}
 
-	graph_altered = false;
+template <typename K, typename V>
+void Graph<K, V>::DFS(const K & source_key) {
+	Vertex<K, V> * source_ptr = *findVertex(source_key);
+	stack<Vertex<K, V> *> DFSstack;
+
+	DFSstack.push(source_ptr);
+	while (!DFSstack.empty()) {
+		Vertex<K, V> * topElement_ptr = DFSstack.top();
+		
+		Edge<K, V> * iter_e = topElement_ptr->outgoing;
+		while (iter_e != nullptr && !iter_e->to->known) { // find an unvisited descendant
+			iter_e = iter_e->next;
+		}
+		if (iter_e != nullptr) {
+			iter_e->to->known = true;
+			iter_e->to->distance = topElement_ptr->distance + 1;
+			DFSstack.push(iter_e->to);
+		}
+		else {
+			DFSstack.pop();
+		}
+	}
 }
 
 // Class Graph | Private Member Function Definitions
@@ -231,7 +244,6 @@ void Graph<K, V>::newEdge(const K & from, const K & to, const V & weight) {
 		v->tail->next = new Edge<K, V>(weight, v_to);
 		v->tail = v->tail->next;
 	}
-	graph_altered = true;
 }
 
 template <typename K, typename V>
@@ -250,7 +262,6 @@ void Graph<K, V>::makeEmpty() {
 		iter = iter->next;
 		delete temp;
 	}
-	graph_altered = true;
 }
 
 template <typename K, typename V>
@@ -266,4 +277,9 @@ void Graph<K, V>::setInitialDistance(const K & source_key) {
 		}
 		iter = iter->next;
 	}
+}
+
+template <typename K, typename V>
+vector<int> Graph<K, V>::ORDERING_GENERATION(Graph<K, V> dendrogram) {
+
 }

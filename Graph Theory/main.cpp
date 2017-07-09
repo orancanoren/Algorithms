@@ -23,6 +23,7 @@ public:
 		g.insert_Edge("Istanbul", "Los Angeles", 400);
 		g.insert_Edge("Izmit", "Istanbul", 150);
 	}
+
 	void menu() {
 		cout << "Options" << endl
 			<< "-------" << endl
@@ -32,10 +33,11 @@ public:
 			<< "4. Remove a vertex" << endl
 			<< "5. Bellman Ford Shortest Path" << endl
 			<< "6. Breadth First Search" << endl
-			<< "7. Get distance to a vertex" << endl
-			<< "8. Exit" << endl
-			<< "Your choice: ";
+			<< "7. Depth First Search" << endl
+			<< "8. Get distance to a vertex" << endl
+			<< "9. Exit" << endl;
 	}
+
 	void edge() {
 		string from, to;
 		int weight;
@@ -105,11 +107,20 @@ public:
 			<< " ms" << endl;
 	}
 
+	void DFS() {
+		string source;
+		cout << "Enter the name of the source vertex" << endl
+			<< " >> ";
+		cin >> source;
+		auto begin = chrono::high_resolution_clock::now();
+		g.DFS(source);
+		auto end = chrono::high_resolution_clock::now();
+		cout << "Distance calculation has been completed in "
+			<< chrono::duration_cast<chrono::milliseconds>(end - begin).count()
+			<< " ms" << endl;
+	}
+
 	void dist() {
-		if (g.isAltered()) {
-			cout << "You need to calculate the distance first!" << endl;
-			return;
-		}
 		string destination;
 		cout << "Enter the name of the vertex you want to reach" << endl
 			<< ">> ";
@@ -172,9 +183,13 @@ int main() {
 			break;
 		case 7:
 			system("CLS");
-			g.dist();
+			g.DFS();
 			break;
 		case 8:
+			system("CLS");
+			g.dist();
+			break;
+		case 9:
 			cout << "K THX BYE" << endl;
 			break;
 		default:
@@ -183,6 +198,6 @@ int main() {
 			cin.clear();
 			break;
 		}
-	} while (choice != 8);
+	} while (choice != 9);
 	return 0;
 }

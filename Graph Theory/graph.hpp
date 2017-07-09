@@ -48,13 +48,18 @@ public:
 	const V & getDistance(const K & to) const;
 	void printPath(const K & to) const;
 	void printGraph() const;
-	bool isAltered() const;
 
-	// Single source shortest path algorithms
+	// Single Source Shortest Path Algorithms
 	void bellman_ford(const K & source_key);
+
+	// Graph Traversal Algorithms
 	void BFS(const K & source_key);
+	void DFS(const K & source_key);
+
+	// Graph Reordering Algorithms
+	void rabbitOrder();
+
 private:
-	bool graph_altered;
 	bool undirected;
 	Vertex<K, V> * vertices, * tail, * source;
 	unsigned Vertex_count = 0;
@@ -74,7 +79,8 @@ enum ExceptionType {
 	UNKNOWN_EXCEPTION_STR, // same as above, includes additional info
 	NOT_FOUND,
 	NEGATIVE_WEIGHT_CYCLE,
-	CANNOT_REACH
+	CANNOT_REACH,
+	HANGING_EDGE
 };
 
 class GraphException : public std::exception {
@@ -114,6 +120,11 @@ public:
 class CannotReach : public GraphException {
 public:
 	CannotReach() : GraphException(CANNOT_REACH, "CANNOT REACH TO SPECIFIED VERTEX") { }
+};
+
+class HangingEdge : public GraphException {
+public:
+	HangingEdge() : GraphException(HANGING_EDGE, "THERE IS AN EDGE INCIDENT ON THIS VERTEX") { }
 };
 
 #include "graph.cpp"
