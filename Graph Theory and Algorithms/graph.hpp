@@ -4,34 +4,32 @@
 // ADJACENCY LIST REPRESENTATION
 #include <limits.h>
 #include <string>
+#include <list>
 #include <exception>
-#define INFINITY INT_MAX
+#include <string>
+#include <climits>
 
-template <typename K, typename V> class Edge;
+template <typename K, typename V> struct Edge;
 
 template <typename K, typename V>
-class Vertex {
-public:
+struct Vertex {
 	Vertex(const K & k)
-		: key(k), next(nullptr), distance(INFINITY), outgoing(nullptr), from(nullptr), tail(nullptr), known(false) { }
+		: key(k), next(nullptr), distance(INFINITY), outgoing(nullptr), 
+		from(nullptr), tail(nullptr), known(false) { }
 
+	// Members
 	K key;
-	Vertex<K, V> * from; /* we keep the Vertex that we have reached to
-				   the current one from so that we can find the
-				   shortest path itself along with the distance */
-	Vertex<K, V> * next; // keep a linked list of vertices
-	Edge<K, V> * outgoing, *tail; // keep the outgoing Edges from the current Vertex in a linked list
-	V distance; // keep the distance to the source Vertex
+	list<Vertex<K, V>>::iterator from;
+	std::list<K, V> neighbors;
+	V distance;
 	bool known;
 };
 
 template <typename K, typename V>
-class Edge {
-public:
-	Vertex<K, V> * to;
+struct Edge {
+	Edge(Vertex<K, V>::iterator to, const V & weight) : weight(weight), to(to) { }
+	list<Vertex<K, V>>::iterator to;
 	V weight;
-	Edge * next; // keep a linked list of Edges outgoing from the current Vertex
-	Edge(const V & weight, Vertex<K, V> *& to) : weight(weight), next(nullptr), to(to) { }
 };
 
 template <typename K, typename V>
@@ -40,14 +38,11 @@ public:
 	Graph(bool undirected = false);
 	~Graph();
 
-	// Utilities
-	void insert_Vertex(const K & key);
-	void insert_Edge(const K & from, const K & to, const V & weight);
-	void remove_Edge(const K & from, const K & to);
-	void remove_Vertex(const K & key);
-	const V & getDistance(const K & to) const;
-	void printPath(const K & to) const;
-	void printGraph() const;
+	// Fundamental Graph Mutators
+	void insert_vertex(const K & key);
+	void insert_edge(const K & from, const K & to, const V & weight); // parallel edges allowed
+	void remove_edge(const K & from, const K & to); // removes all parallel edges
+	void remove_vertex(const K & key);
 
 	// Single Source Shortest Path Algorithms
 	void bellman_ford(const K & source_key);
@@ -56,18 +51,21 @@ public:
 	void BFS(const K & source_key);
 	void DFS(const K & source_key);
 
-	// Graph Reordering Algorithms
-	void rabbitOrder();
-
+	// Utilities
+	const V get_distance(const K & to) const;
+	void print_path(const K & to) const;
+	void printGraph() const;
+	static bool vertex_comparator(const Vertex<K, V> & v1, const Vertex<K, V> & v2);
 private:
+	// Members
 	bool undirected;
-	Vertex<K, V> * vertices, * tail, * source;
-	unsigned Vertex_count = 0;
+	std::list<Vertex<K, V>> vertices;
 
-	Vertex<K, V> ** findVertex(const K & key) const;
-	void makeEmpty();
+	// Utilities
+	void clear(); // sets the graph into its initial states (i.e. no vertices or edges)
 	void newEdge(const K & from, const K & to, const V & weight);
 	void setInitialDistance(const K & source_key);
+	std::list<Vertex<K, V>>::iterator findVertex(const K & key) const;
 };
 
 // =====================

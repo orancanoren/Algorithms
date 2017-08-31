@@ -1,100 +1,94 @@
+#include "graph.hpp"
 #include <iostream>
 #include <string>
 #include <queue>
 #include <stack>
 #include <vector>
+#include <algorithm>
+#include <list>
 
 template <typename K, typename V>
 Graph<K, V>::Graph(bool undirected)
-	: undirected(undirected), vertices(nullptr), tail(nullptr) {
-	Vertex_count = 0;
-}
+	: undirected(undirected) { }
 
 template <typename K, typename V>
 Graph<K, V>::~Graph() {
-	makeEmpty();
-	Vertex_count = 0;
+	clear();
 }
 
-// Class Graph | Public Utility Function Definitions
+// Class Graph | Public | Graph Mutators
 
 template <typename K, typename V>
-void Graph<K, V>::insert_Vertex(const K & key) {
-	if (vertices == nullptr) {
-		vertices = new Vertex<K, V>(key);
-		tail = vertices;
-	}
-	else {
-		tail->next = new Vertex<K, V>(key);
-		tail = tail->next;
-	}
-	Vertex_count++;
+void Graph<K, V>::insert_vertex(const K & key) {
+		vertices.push_back(Vertex(key));
 }
 
 template <typename K, typename V>
-void Graph<K, V>::insert_Edge(const K & from, const K & to, const V & weight) {
-	newEdge(from, to, weight);
+void Graph<K, V>::insert_edge(const K & from, const K & to, const V & weight) {
+	// 1 - Find the source vertex
+	list<Vertex<K, V>>::iterator source = find_if(vertices.begin(), vertices.end(), vertex_comparator);
+	if (source_vertex == vertices.end()) {
+		throw NotFound(VERTEX_NOT_FOUND);
+	}
+
+	// 2 - Insert the edge if there isn't an edge incident on <from> and <to>
+	if (find(source_vertex->neighbors.begin(), source_vertex->neighbors.end(), to) != source_vertex->neighbors.end()) {
+		throw PARALLEL_EDGE_EXCEPTION();
+	}
+	source_vertex->neighbors.push_back(Edge(to, weight));
+
 	if (undirected) {
-		newEdge(to, from, weight);
+		// 3 - Repeat above steps for the insertion of (to)-[:weight]->(from)
+		list<Vertex<K, V>>::iterator source_vertex = find(vertices.begin(), vertices.end(), to);
+		if (source_vertex == vertices.end()) {
+			throw NotFound(VERTEX_NOT_FOUND);
+		}
+
+		if (find(source_vertex->neighbors.begin(), source_vertex->neighbors.end(), from) != source_vertex->neighbors.end()) {
+			throw PARALLEL_EDGE_EXCEPTION();
+		}
+		source_vertex->neighbors.push_back(Edge(from, weight));
 	}
 }
 
 template <typename K, typename V>
-void Graph<K, V>::remove_Edge(const K & from, const K & to) {
-	// 1) Find Vertex `from`
-	Vertex<K, V> * v = *findVertex(from);
-	// 2) Find the Edge
-	Edge<K, V> * iter = v->outgoing;
-	if (iter->next == nullptr)
-	if (iter->to->key == to) {
-		delete iter;
-		v->outgoing = nullptr;
-	}
-	else if (iter->next != nullptr) {
-		while (iter->next != nullptr && iter->next->to->key != to) { iter = iter->next; }
-		if (iter->next == nullptr) throw NotFound(EDGE_NOT_FOUND);
-		Edge<K, V> * temp = iter->next;
-		iter->next = iter->next->next;
-		delete temp;
-	}
-	
+void Graph<K, V>::remove_edge(const K & from, const K & to) {
+	// 1 - Find Vertex <from>
+	list<Vertex<K, V>>::iterator source = find_if(vertices.begin(), vertices.end(), vertex_comparator(from));
+	if (source == vertices.end())
+		throw VERTEX_NOT_FOUND();
+
+	// 2 - Remove the edge
+	source->neighbors.remove_if(edge_comparator(to));
 	if (undirected) {
-		remove_Edge(to, from);
+		list<Vertex<K, V>>::iterator source = find_if(vertices.cbegin(), vertices.cend(), vertex_comparator(to));
+		if (source == vertices.end())
+			throw VERTEX_NOT_FOUND();
+
+		source->neighbors.remove_if(edge_comparator(from));
 	}
-	else throw NotFound(EDGE_NOT_FOUND);
 }
 
 template <typename K, typename V>
-void Graph<K, V>::remove_Vertex(const K & key) {
-	Vertex<K, V> * toBeDeleted, * iter = vertices;
-	if (vertices->key == key) { // first element in the linked list will be deleted
-		toBeDeleted = vertices;
-		if (toBeDeleted->outgoing != nullptr) throw HangingEdge();
-		vertices = vertices->next;
-		delete toBeDeleted;
-	}
-	else if (iter->next != nullptr) {
-		while (iter->next != nullptr && iter->next->key != key) { iter = iter->next; }
-		if (iter->next == nullptr) throw NotFound(VERTEX_NOT_FOUND);
-		toBeDeleted = iter->next;
-		if (toBeDeleted->outgoing != nullptr) throw HangingEdge();
-		iter->next = iter->next->next;
-		delete toBeDeleted;
-	}
-	else throw NotFound(VERTEX_NOT_FOUND);
+void Graph<K, V>::remove_vertex(const K & key) {
+	vertices.remove_if(vertex_comparator(key));
 }
 
 template <typename K, typename V>
-const V & Graph<K, V>::getDistance(const K & to) const {
-	Vertex<K, V> * v = *findVertex(to);
-	if (v->distance == INFINITY) {
+const V Graph<K, V>::get_distance(const K & to) const {
+	Vertex<K, V>::const_iterator find_result = find(vertices.cbegin(), vertices.cend(), vertex_comparator(to));
+	if (find_result == vertices.cend())
+		throw VERTEX_NOT_FOUND();
+
+	if (find_result->distance == INFINITY)
 		throw CannotReach();
-	}
+
 	return v->distance;
 }
 
 template <typename K, typename V>
 void Graph<K, V>::printPath(const K & to) const {
+
 	const Vertex<K, V> * v = *findVertex(to);
 	std::string path;
 	while (v->from != nullptr) {

@@ -15,12 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Graph Theory\graph.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Graph Theory\main.cpp">
+    <ClCompile Include="Dynamic Programming\coin_change.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
