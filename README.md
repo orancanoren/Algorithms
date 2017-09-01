@@ -1,5 +1,6 @@
 # Algorithms
 <h4>C++ implementations of some of the algorithms I like</h4>
+<p><strong>Currently working on</strong> <i>Dynamic Programming</i></p>
 <hr />
 <h2>Compilation</h2>
 <p>Compilation Notes</p>
@@ -10,9 +11,6 @@ that your compiler supports such functionality</li>
 place the graph.cpp in the same directory as graph.hpp and do NOT
 include the CPP file in your project
 </ul>
-<hr />
-<p><strong>Currently working on</strong> <i>Dynamic Programming</i></p>
-<br />
 <h2>Algorithms</h2>
 <h4>Data Structures</h4>
 <h5>AVL Trees</h5>
