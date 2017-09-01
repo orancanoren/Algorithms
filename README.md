@@ -1,42 +1,64 @@
 # Algorithms
-<h4>Efficient C++ implementations of all sorts of algorithms</h4>
+<h4>C++ implementations of some of the algorithms I like</h4>
 <hr />
 <h2>Compilation</h2>
 <p>Compilation Notes</p>
 <ul>
 <li>Note that the code utilizes C++11 features, please ensure
 that your compiler supports such functionality</li>
-<li>Graph Theory uses a templated class structure. In your project,
+<li>Graph Theory source uses a templated class structure. In your project,
 place the graph.cpp in the same directory as graph.hpp and do NOT
 include the CPP file in your project
 </ul>
 <hr />
-<p><strong>Currently working on</strong> <i>graph theory</i></p>
+<p><strong>Currently working on</strong> <i>Dynamic Programming</i></p>
 <ul>
-<li>Graph Structure & Mutating Operations</li>
-<li>Graph Exceptions Class</li>
-<li>Bellman-Ford Algorithm</li>
-<li>Breadth First Search</li>
-<li>Depth First Search</li>
-</ul>
-<p>To be completed:</p>
+<hr />
+<h4>Algorithms</h4>
 <ul>
-<li>Dijsktra's Shortest Path</li>
-<li>Floyd-Warshall Algorithm</li>
-<li>Topological Sort</li>
-<li>Uniform Cost Search</li>
-<li>Kruskal MST</li>
-<li>Prim MST</li>
-</ul>
-<hr>
-<h3>Up Next</h3>
-<ul>
-<li><p><b>Algorithm</b> - Dijkstra's Shortest Path</p>
-<li><p><b>To Do</b></p>
-<ol>
-<li>Min Heap</li>
-<li>Binary Search Tree - for <i>decreaseKey()</i></li>
-</ol>
+<li>Data Structures
+  <ol>
+  <li>AVL Trees
+      [x]fundamental mutators
+   </li>
+   <li>Red-Black Trees
+      [x]fundamental mutators-
+      [x]successor
+      [x]predecessor
+      [x]get_rank
+   </li>
+  </ol>
+</li>
+<li>Graphs
+  [x]fundamental mutators
+  <ul>
+  <li>Graph Traversal
+    [x] Breadth-First Search
+    [x] Depth-First Search
+  </li>
+  <li>Single Source Weighted Shortest Path
+    [x] Belmlman-Ford Algorithm
+    [ ] Dijsktra's Algorithm
+  </li>
+  <li>Minimum Spanning Trees
+    [ ] Kruskal's MST
+    [ ] Prim's MST
+  </li>
+  <li>All Pair Shortest Path
+    [ ] Floyd-Warshall Algorithm
+  </li>
+  <li>Graph Theory
+    [ ] Topological Sort
+  </li>
+  </ul>
+</li>
+<li>Sorting & Selecting
+    [x] Bubble Sort
+    [x] Count Sort
+    [x] Insertion Sort
+    [x] Quickselect (randomized)
+    [x] Quickselect (median of medians)
+    [x] Quicksort
+    [x] Mergesort
 </li>
 </ul>
-<hr />
